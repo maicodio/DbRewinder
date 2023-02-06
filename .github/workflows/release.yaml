@@ -1,0 +1,46 @@
+name: Release to NuGet
+
+on:
+  release:
+    types: [published]
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: "123456"
+        ports:
+          - "3306:3306"
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3 
+    steps:
+    - name: Version check
+      run: |
+        TAG=${{ github.event.release.tag_name }}
+        VERSION=${TAG#v}
+        echo Version: $VERSION
+        echo "VERSION=$VERSION" >> $GITHUB_ENV    
+
+    - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+    - name: Configure .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: "6.0.x" # SDK Version to use.
+
+    - name: Build
+      run: dotnet build -c Release
+
+    - name: Test
+      run: dotnet test -c Release --no-build
+
+    - name: Pack nugets
+      run: dotnet pack -c Release --no-build -p:PackageVersion=${VERSION} --output .
+
+    - name: Push to NuGet
+      run: dotnet nuget push "*.nupkg" --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
