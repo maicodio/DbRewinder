@@ -11,7 +11,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>Db Restore Rewind MySql</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageReadmeFile>../../README.md</PackageReadmeFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
