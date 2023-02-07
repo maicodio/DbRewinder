@@ -9,7 +9,9 @@
     <Copyright>Maico Dionisio @ 2023</Copyright>
     <RepositoryUrl>https://github.com/maicodio/DbRewinder</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>Db restore rewind</PackageTags>
+    <PackageTags>Db Restore Rewind MySql</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>../../README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
