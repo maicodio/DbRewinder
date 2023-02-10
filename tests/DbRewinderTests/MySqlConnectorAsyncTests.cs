@@ -260,7 +260,7 @@ COLLATE=utf8mb4_0900_ai_ci;";
     }
 
     [Fact]
-    public async Task DependencyInjectionSuccessTest()
+    public void DependencyInjectionSuccessTest()
     {
         // Arrange
         var serviceCollection = new ServiceCollection();
