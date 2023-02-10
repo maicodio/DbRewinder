@@ -1,3 +1,5 @@
+using Microsoft.Extensions.DependencyInjection;
+
 namespace DbRewinderTests;
 
 [Collection("MySqlConnectorAsyncTests")]
@@ -255,5 +257,25 @@ COLLATE=utf8mb4_0900_ai_ci;";
         
         // assert
         ret.Should().Be(0);
+    }
+
+    [Fact]
+    public async Task DependencyInjectionSuccessTest()
+    {
+        // Arrange
+        var serviceCollection = new ServiceCollection();
+
+        // act
+        serviceCollection
+            .ConfigureRewinder(setup => setup
+                .AddProvider(DbRewinderProviderType.MySql, sp => new MySqlConnection(CONNECTION_STRING_DATABASE)));
+         
+        var serviceProvider = serviceCollection.BuildServiceProvider();
+        var asyncService = serviceProvider.GetService<IDbRewinderAsyncService>();
+        var syncService = serviceProvider.GetService<IDbRewinderSyncService>();
+
+        // assert
+        asyncService.Should().NotBeNull();
+        syncService.Should().NotBeNull();
     }
 }

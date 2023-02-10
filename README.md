@@ -38,6 +38,14 @@ Only MySql 8 with MysqlConnector has been tested.
         .AddProvider(DbRewinderProviderType.MySql, serviceProvider => serviceProvider.GetService<IMyDbContext>().Database.GetConnection())
         .AddProvider(DbRewinderProviderType.MySql, _ => new MySqlConnection(connectionString2)));
 
+    ...
+
+    var syncService = serviceProvider.GetService<IDbRewinderSyncService>();
+    
+    //or
+    
+    var asyncService = serviceProvider.GetService<IDbRewinderAsyncService>();
+
 ```
 
 - Before start using the service you must run the install method once
