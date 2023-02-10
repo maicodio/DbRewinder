@@ -29,7 +29,11 @@ internal class MySqlRewinderProvider: IDbRewinderProvider
         {
             await UninstallRewinderAsync().ConfigureAwait(false);;
         }
+        #if NET60
         else if (await CheckConfigAsync(connection).ConfigureAwait(false))
+        #else
+        else if (CheckConfig(connection))
+        #endif
         {
             return;
         }
@@ -132,11 +136,19 @@ internal class MySqlRewinderProvider: IDbRewinderProvider
         await command.ExecuteNonQueryAsync().ConfigureAwait(false);
     }
 
+    #if NET60
     private static async ValueTask<bool> CheckConfigAsync(DbConnection connection)
-    {
+    {   
         var tables = await connection.GetSchemaAsync("Tables").ConfigureAwait(false);
         return tables.Select($"TABLE_SCHEMA = '{connection.Database}' AND TABLE_NAME = '{REWIND_TABLE_NAME}'").Any();
     }
+    #else
+    private static bool CheckConfig(DbConnection connection)
+    {   
+        var tables = connection.GetSchema("Tables");
+        return tables.Select($"TABLE_SCHEMA = '{connection.Database}' AND TABLE_NAME = '{REWIND_TABLE_NAME}'").Any();
+    }
+    #endif
 
     private static async Task GenerateRewinderTriggers(DbConnection connection)
     {

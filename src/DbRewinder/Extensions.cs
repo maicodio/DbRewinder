@@ -19,7 +19,11 @@ internal static class Extensions
     internal static async Task<DataTable> ExecuteDataTableAsync(this DbCommand command)
     {
         using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
+        #if NET60
         DataTable schema = await reader.GetSchemaTableAsync().ConfigureAwait(false) ?? new DataTable();
+        #else
+        DataTable schema = reader.GetSchemaTable() ?? new DataTable();
+        #endif
         DataTable result = new DataTable();
 
         foreach (DataRow r in schema.Rows)
